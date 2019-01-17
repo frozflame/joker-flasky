@@ -12,7 +12,7 @@ from setuptools import setup, find_packages
 
 namespace = 'joker'
 package_name = 'flasky'
-description = ''
+description = 'Tweak flask for static site builiding'
 
 
 def read(filename):
