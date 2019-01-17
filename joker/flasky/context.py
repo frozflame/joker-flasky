@@ -19,7 +19,7 @@ class Rumor(object):
 
     def __getattr__(self, item):
         try:
-            self.attributes[item]
+            return self.attributes[item]
         except KeyError:
             return random.randrange(10000)
 
