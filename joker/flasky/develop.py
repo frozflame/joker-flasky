@@ -9,11 +9,6 @@ from os.path import split, splitext
 import flask
 
 from joker.flasky.context import Rumor
-from joker.flasky.serialize import jsonencoder_default
-
-
-class JSONEncoderFlasky(flask.json.JSONEncoder):
-    default = jsonencoder_default
 
 
 def _create_flaskapp(contextmap, **flask_params):
