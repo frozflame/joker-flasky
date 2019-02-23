@@ -5,27 +5,25 @@ from __future__ import unicode_literals
 
 import codecs
 import datetime
-import decimal
 import json
 
-
-def jsonencoder_default(encoder, obj):
-    if hasattr(obj, 'as_json_serializable'):
-        return obj.as_json_serializable()
-    datetime_types = datetime.datetime, datetime.date, datetime.time
-    if isinstance(obj, datetime_types):
-        return obj.isoformat()
-    elif isinstance(obj, datetime.timedelta):
-        return obj.total_seconds()
-
-    elif isinstance(obj, decimal.Decimal):
-        return float(obj)
-    else:
-        return encoder.default(vars(obj))
+import flask
 
 
-class JSONEncoderExt(json.JSONEncoder):
-    default = jsonencoder_default
+def jsonp(resp, callback):
+    return flask.current_app.response_class(
+        callback + '(' + flask.json.dumps(resp) + ');\n',
+        mimetype='application/javascript'
+    )
+
+
+class JSONEncoderExt(flask.json.JSONEncoder):
+    def default(self, obj):
+        if hasattr(obj, 'as_json_serializable'):
+            obj = obj.as_json_serializable()
+        elif isinstance(obj, datetime.timedelta):
+            obj = obj.total_seconds()
+        return super(JSONEncoderExt, self).default(obj)
 
 
 def indented_json_dumps(obj, **kwargs):
