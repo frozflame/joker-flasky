@@ -3,6 +3,7 @@ Changes
 
 #### 0.0.3
 * remove module level `import flask` in `j.f.serialize`
+* add Decimal support in `j.f.ser.JSONEncoderExt`
 
 #### 0.0.2
 * remove `j.f.ser.jsonencoder_default`

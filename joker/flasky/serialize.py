@@ -7,6 +7,7 @@ import codecs
 import datetime
 import json
 import uuid
+import decimal
 
 
 def jsonp(resp, callback):
@@ -21,8 +22,10 @@ class JSONEncoderExt(json.JSONEncoder):
     def default(self, o):
         if hasattr(o, 'as_json_serializable'):
             return o.as_json_serializable()
-        elif isinstance(o, datetime.timedelta):
-            o = o.total_seconds()
+        if isinstance(o, decimal.Decimal):
+            return float(o)
+        if isinstance(o, datetime.timedelta):
+            return o.total_seconds()
         if isinstance(o, (datetime.datetime, datetime.date)):
             return o.isoformat()
         if isinstance(o, uuid.UUID):
