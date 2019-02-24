@@ -5,20 +5,20 @@ from __future__ import unicode_literals
 
 import codecs
 import datetime
-import json
-import uuid
 import decimal
+import json
+
+import flask
 
 
 def jsonp(resp, callback):
-    import flask
     return flask.current_app.response_class(
         callback + '(' + flask.json.dumps(resp) + ');\n',
         mimetype='application/javascript'
     )
 
 
-class JSONEncoderExt(json.JSONEncoder):
+class JSONEncoderPlus(flask.json.JSONEncoder):
     def default(self, o):
         if hasattr(o, 'as_json_serializable'):
             return o.as_json_serializable()
@@ -28,15 +28,13 @@ class JSONEncoderExt(json.JSONEncoder):
             return o.total_seconds()
         if isinstance(o, (datetime.datetime, datetime.date)):
             return o.isoformat()
-        if isinstance(o, uuid.UUID):
-            return str(o)
-        return super(JSONEncoderExt, self).default(o)
+        return super(JSONEncoderPlus, self).default(o)
 
 
 def indented_json_dumps(obj, **kwargs):
     kwargs.setdefault('indent', 4)
     kwargs.setdefault('ensure_ascii', False)
-    kwargs.setdefault('cls', JSONEncoderExt)
+    kwargs.setdefault('cls', JSONEncoderPlus)
     return json.dumps(obj, **kwargs)
 
 
