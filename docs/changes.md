@@ -3,6 +3,7 @@ Changes
 
 #### 0.0.5
 * function `_make_salt`
+* bug fix: _global dict altered
 
 #### 0.0.4
 * replace `JSONEncoderExt` with `JSONEncoderPlus` (flask-based)
