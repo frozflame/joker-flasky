@@ -1,6 +1,9 @@
 Changes
 =======
 
+#### 0.0.5
+* function `_make_salt`
+
 #### 0.0.4
 * replace `JSONEncoderExt` with `JSONEncoderPlus` (flask-based)
 

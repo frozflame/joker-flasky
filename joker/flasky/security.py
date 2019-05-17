@@ -3,11 +3,14 @@
 
 from __future__ import division, print_function
 
-import base64
 import hashlib
-import os
+import time
 
 from joker.cast import want_bytes, want_unicode
+
+
+def _make_salt():
+    return hex(int(time.time() * 65555))[-10:][::-1]
 
 
 class HashedPassword(object):
@@ -16,20 +19,15 @@ class HashedPassword(object):
         self.algo = algo
         self.salt = salt
 
-    @staticmethod
-    def gen_random_string(length):
-        n = 1 + int(length * 0.625)
-        return base64.b32encode(os.urandom(n)).decode()[:length]
-
     @classmethod
     def parse(cls, s):
         digest, algo, salt = s.split(':')
         return cls(digest, algo, salt)
 
     @classmethod
-    def generate(cls, password, algo='sha512', salt=None):
+    def generate(cls, password, algo='sha256', salt=None):
         if salt is None:
-            salt = cls.gen_random_string(16)
+            salt = _make_salt()
         p = want_bytes(password)
         s = want_bytes(salt)
         h = hashlib.new(algo, p + s)
