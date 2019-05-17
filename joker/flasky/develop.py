@@ -23,7 +23,7 @@ def _create_flaskapp(contextmap, **flask_params):
 
     def render(path):
         name, ext = splitext(path)
-        context = contextmap.get('_global', {})
+        context = contextmap.get('_global', {}).copy()
         context.update(contextmap.get(name, {}))
         template_path = context.get('_prot', name) + '.html'
         return flask.render_template(template_path, **context)
