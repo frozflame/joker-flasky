@@ -31,7 +31,7 @@ def _create_flaskapp(contextmap, **flask_params):
         template_path = context.get('_prot', name) + '.html'
         return flask.render_template(template_path, **context)
 
-    app.route('/')(lambda: flask.redirect('index.html'))
+    app.route('/')(lambda: render('index'))
     return app
 
 
