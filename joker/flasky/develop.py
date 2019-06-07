@@ -21,22 +21,17 @@ def _create_flaskapp(contextmap, **flask_params):
     _global = contextmap.setdefault('_global', {})
     _global['sver'] = Rumor(**contextmap.get('_sver', {}))
 
+    @app.route('/<path:path>')
     def render(path):
         name, ext = splitext(path)
+        if ext and ext != '.html':
+            return flask.abort(404)
         context = contextmap.get('_global', {}).copy()
         context.update(contextmap.get(name, {}))
         template_path = context.get('_prot', name) + '.html'
         return flask.render_template(template_path, **context)
 
     app.route('/')(lambda: flask.redirect('index.html'))
-
-    @app.route('/<path:path>')
-    def viewfunc(path):
-        if path.endswith('.html'):
-            return render(path)
-        else:
-            return flask.abort(404)
-
     return app
 
 
