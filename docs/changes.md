@@ -1,6 +1,10 @@
 Changes
 =======
 
+#### 0.0.6
+* path without .html
+* no redirect for "/"
+
 #### 0.0.5
 * function `_make_salt`
 * bug fix: _global dict altered
