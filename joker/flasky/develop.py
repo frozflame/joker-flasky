@@ -27,7 +27,7 @@ def _create_flaskapp(contextmap, **flask_params):
         if ext and ext != '.html':
             return flask.abort(404)
         try:
-            context = contextmap[path]
+            context = contextmap[name]
             template_path = context['_prot'] + '.html'
         except KeyError:
             return flask.abort(404)
