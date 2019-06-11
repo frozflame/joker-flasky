@@ -1,2 +1,2 @@
 # joker-flasky
-Tweak flask for static site builiding
+Tweak flask for static site building

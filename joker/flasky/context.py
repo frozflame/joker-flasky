@@ -31,7 +31,7 @@ class ContextFile(object):
         self._defaults = {}
         self._mtime = 0
         self._load_from_file()
-        
+
     def _load_from_file(self):
         mtime = os.path.getmtime(self.path)
         if mtime - (self._mtime or 0) < 0.001:
@@ -42,10 +42,10 @@ class ContextFile(object):
         data.update(self._defaults)
         self._data = data
         self._mtime = mtime
-        
+
     def get(self, key, default=None):
         return self._data.get(key, default)
-    
+
     def get_keys(self):
         self._load_from_file()
         return list(self._data)
@@ -70,7 +70,7 @@ class RealContextFile(ContextFile):
             self._load_from_file()
             self._xtime = current_time + self.ttl
         return self._data.get(key, default)
-    
+
     def setdefault(self, key, default=None):
         return self._data.setdefault(key, default)
 
@@ -127,7 +127,7 @@ class RealContextDirectory(ContextDirectory):
         super(RealContextDirectory, self).__init__(dir_path)
         self._xtime = {}
         self.ttl = ttl
-        
+
     def get(self, key, default=None):
         """
         Update _xtime if _load_from_file() is called and ttl available.
@@ -143,10 +143,10 @@ class RealContextDirectory(ContextDirectory):
             self._xtime[key] = current_time + self.ttl
             return section
         return super(RealContextDirectory, self).get(key, default)
-    
+
     def setdefault(self, key, default=None):
         section = self._cache.setdefault(key, self.get(key, default))
-        self._xtime.setdefault(key, float('inf')) 
+        self._xtime.setdefault(key, float('inf'))
         return section
 
 
