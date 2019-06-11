@@ -8,8 +8,6 @@ from os.path import split, splitext
 
 import flask
 
-from joker.flasky.context import Rumor
-
 
 def _create_flaskapp(contextmap, **flask_params):
     """
@@ -18,17 +16,21 @@ def _create_flaskapp(contextmap, **flask_params):
     :return: (flask.Flask)
     """
     app = flask.Flask(**flask_params)
-    _global = contextmap.setdefault('_global', {})
-    _global['sver'] = Rumor(**contextmap.get('_sver', {}))
+    _gl = contextmap.pop('_global', {})
+
+    for ctx in contextmap.values():
+        ctx.update({k: v for k, v in _gl.items() if k not in ctx})
 
     @app.route('/<path:path>')
     def render(path):
         name, ext = splitext(path)
         if ext and ext != '.html':
             return flask.abort(404)
-        context = contextmap.get('_global', {}).copy()
-        context.update(contextmap.get(name, {}))
-        template_path = context.get('_prot', name) + '.html'
+        try:
+            context = contextmap[path]
+            template_path = context['_prot'] + '.html'
+        except KeyError:
+            return flask.abort(404)
         return flask.render_template(template_path, **context)
 
     app.route('/')(lambda: render('index'))
