@@ -1,6 +1,9 @@
 Changes
 =======
 
+#### 0.0.7
+* _create_flaskapp(): update with _global before requests, _sver removed
+
 #### 0.0.6
 * path without .html
 * no redirect for "/"
