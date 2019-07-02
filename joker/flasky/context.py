@@ -23,9 +23,8 @@ class Rumor(object):
             return random.randrange(10000)
 
 
-def load_standard_ctxmap(path, extra_path=None):
-    if extra_path is None:
-        extra_path = os.path.split(path)[0]
+def load_standard_ctxmap(path):
+    dir_ = os.path.split(path)[0]
     ctxmap = yaml.safe_load(open(path))
     extra = {}
     for key, val in ctxmap.items():
@@ -33,7 +32,7 @@ def load_standard_ctxmap(path, extra_path=None):
             continue
         if re.match(r'\.\w+', val):
             val = key + val
-        p = os.path.join(extra_path, val)
+        p = os.path.join(dir_, val)
         extra[key] = yaml.safe_load(open(p))
     ctxmap.update(extra)
     return ctxmap
