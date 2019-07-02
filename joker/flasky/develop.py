@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # coding: utf-8
 
-from __future__ import unicode_literals
+from __future__ import division, print_function
 
 import os
 from os.path import split, splitext
@@ -11,7 +11,7 @@ import flask
 
 def _create_flaskapp(contextmap, **flask_params):
     """
-    :param contextmap: a dict-like obj with .get() and .setdefault()
+    :param contextmap: a dict-like obj
     :param flask_params: (dict)
     :return: (flask.Flask)
     """

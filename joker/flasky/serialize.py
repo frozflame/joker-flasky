@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # coding: utf-8
 
-from __future__ import unicode_literals
+from __future__ import unicode_literals, print_function
 
 import datetime
 import decimal
@@ -30,7 +30,6 @@ class JSONEncoderPlus(flask.json.JSONEncoder):
         return super(JSONEncoderPlus, self).default(o)
 
 
-# moved to joker.textmanip.yamlkit
 def indented_json_dumps(obj, **kwargs):
     kwargs.setdefault('indent', 4)
     kwargs.setdefault('ensure_ascii', False)
