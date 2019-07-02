@@ -30,6 +30,7 @@ class JSONEncoderPlus(flask.json.JSONEncoder):
         return super(JSONEncoderPlus, self).default(o)
 
 
+# moved to joker.textmanip.yamlkit
 def indented_json_dumps(obj, **kwargs):
     kwargs.setdefault('indent', 4)
     kwargs.setdefault('ensure_ascii', False)
