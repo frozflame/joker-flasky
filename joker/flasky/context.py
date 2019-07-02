@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # coding: utf-8
 
-from __future__ import unicode_literals
+from __future__ import division, print_function
 
 import os
 import random
@@ -23,7 +23,7 @@ class Rumor(object):
             return random.randrange(10000)
 
 
-def load_standard_ctxmap(path):
+def load_contextmap(path):
     dir_ = os.path.split(path)[0]
     ctxmap = yaml.safe_load(open(path))
     extra = {}
@@ -36,3 +36,6 @@ def load_standard_ctxmap(path):
         extra[key] = yaml.safe_load(open(p))
     ctxmap.update(extra)
     return ctxmap
+
+
+load_standard_ctxmap = load_contextmap
