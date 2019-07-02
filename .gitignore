@@ -52,7 +52,4 @@ docs/_build/
 
 # PyBuilder
 target/
-
-zombies/*
-experiments/*
-tutorials-cn/*
+_legacy
