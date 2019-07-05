@@ -5,7 +5,6 @@ from __future__ import division, print_function
 
 import os
 import random
-import re
 
 import yaml
 
@@ -30,12 +29,10 @@ def load_contextmap(path):
     for key, val in ctxmap.items():
         if not isinstance(val, str):
             continue
-        if re.match(r'\.\w+', val):
-            val = key + val
-        p = os.path.join(dir_, val)
-        extra[key] = yaml.safe_load(open(p))
+        if val.endswith('.yml') or val.endswith('.yaml'):
+            name, ext = val.rsplit('.', maxsplit=1)
+            fn = (name or key) + '.' + ext
+            p = os.path.join(dir_, fn)
+            extra[key] = yaml.safe_load(open(p))
     ctxmap.update(extra)
     return ctxmap
-
-
-load_standard_ctxmap = load_contextmap
