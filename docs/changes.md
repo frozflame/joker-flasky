@@ -1,8 +1,11 @@
 Changes of joker-flasky
 ========================
 
+#### 0.3
+* improve load_contextmap
+
 #### 0.2
-* rename j.f.context.load_standard_ctxmap to load_contextmap (unify terminology)
+* rename j.f.context.load_standard_ctxmap to load_contextmap with improvements
 
 #### 0.1
 * remove j.f.context.{ContextFile,RealContextFile,ContextDirectory,RealContextDirectory,context_load}
