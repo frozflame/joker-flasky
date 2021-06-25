@@ -7,13 +7,7 @@ import decimal
 import flask
 import flask.views
 from flask import request
-
-
-def safe_merge_dicts(*dicts):
-    retdic = {}
-    for dic in dicts:
-        retdic.update(dic)
-    return retdic
+from volkanic.utils import merge_dicts
 
 
 def respond(*args, **kwargs):
@@ -47,7 +41,7 @@ def get_request_data(force_json=False):
             data = {'': data}
     else:
         data = request.form.to_dict()
-    return safe_merge_dicts(data, request.args)
+    return merge_dicts(data, request.args)
 
 
 class _ReducedViewMixin:
