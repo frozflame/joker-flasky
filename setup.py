@@ -4,7 +4,7 @@
 import os
 import re
 
-from setuptools import setup, find_packages
+from setuptools import setup, find_namespace_packages
 
 
 # import joker; exit(1)
@@ -12,7 +12,7 @@ from setuptools import setup, find_packages
 
 namespace = 'joker'
 package_name = 'flasky'
-description = 'Tweak flask for static site builiding'
+description = 'Reusable components for flask-based web development'
 
 
 def read(filename):
@@ -46,13 +46,11 @@ config = {
     'description': '' + description,
     'keywords': '',
     'license': "GNU General Public License (GPL)",
-    'packages': find_packages(exclude=['test_*']),
+    'packages': find_namespace_packages(include=['joker.*']),
     'zip_safe': False,
     'install_requires': read("requirements.txt"),
     'classifiers': [
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.0',
         'Programming Language :: Python :: 3.1',
