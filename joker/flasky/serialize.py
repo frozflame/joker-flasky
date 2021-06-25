@@ -1,46 +1,27 @@
 #!/usr/bin/env python3
 # coding: utf-8
 
-from __future__ import unicode_literals, print_function
+import warnings
 
-import datetime
-import decimal
-import json
+from joker.flasky.viewutils import JSONEncoderPlus, jsonp
+from volkanic.utils import indented_json_dumps, indented_json_print
 
-import flask
+_warning = """\
+joker.flasky.serialize is deprecated, please consider use
+- joker.flasky.viewutils.JSONEncoderPlus
+- joker.flasky.viewutils.jsonp
+- volkanic.utils.indented_json_dumps
+- volkanic.utils.indented_json_print
+"""
 
+warnings.warn(
+    _warning,
+    DeprecationWarning
+)
 
-def jsonp(resp, callback):
-    return flask.current_app.response_class(
-        callback + '(' + flask.json.dumps(resp) + ');\n',
-        mimetype='application/javascript'
-    )
-
-
-class JSONEncoderPlus(flask.json.JSONEncoder):
-    def default(self, o):
-        if hasattr(o, 'as_json_serializable'):
-            return o.as_json_serializable()
-        if isinstance(o, decimal.Decimal):
-            return float(o)
-        if isinstance(o, datetime.timedelta):
-            return o.total_seconds()
-        if isinstance(o, (datetime.datetime, datetime.date)):
-            return o.isoformat()
-        return super(JSONEncoderPlus, self).default(o)
-
-
-def indented_json_dumps(obj, **kwargs):
-    kwargs.setdefault('indent', 4)
-    kwargs.setdefault('ensure_ascii', False)
-    kwargs.setdefault('cls', JSONEncoderPlus)
-    return json.dumps(obj, **kwargs)
-
-
-def indented_json_print(obj, **kwargs):
-    print_kwargs = {}
-    for k in ['sep', 'end', 'file', 'flush']:
-        if k in kwargs:
-            print_kwargs[k] = kwargs.pop(k)
-    s = indented_json_dumps(obj, **kwargs)
-    print(s, **print_kwargs)
+__all__ = [
+    'JSONEncoderPlus',
+    'jsonp',
+    'indented_json_dumps',
+    'indented_json_print',
+]

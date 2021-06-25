@@ -2,3 +2,4 @@ flask
 joker
 pyyaml
 six
+volkanic>=0.3.1
