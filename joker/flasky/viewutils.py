@@ -3,6 +3,7 @@
 
 import datetime
 import decimal
+import os.path
 
 import flask
 import flask.views
@@ -113,3 +114,10 @@ class JSONEncoderPlus(flask.json.JSONEncoder):
         if isinstance(o, datetime.datetime):
             return o.strftime(self.datetime_fmt)
         return super(JSONEncoderPlus, self).default(o)
+
+
+def infer_mime_type(filename: str, default="text/plain") -> str:
+    from joker.flasky.environ import GlobalInterface
+    gi = GlobalInterface()
+    name, ext = os.path.splitext(filename)
+    return gi.mime_types.get(ext or name, default)
