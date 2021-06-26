@@ -32,6 +32,14 @@ def respond(*args, **kwargs):
     return resp
 
 
+def respond_with_pre_gzipped(content: bytes, content_type=None):
+    content_type = content_type or 'text/plain'
+    resp = flask.make_response(content)
+    resp.headers.set('Content-Type', content_type)
+    resp.headers['Content-Encoding'] = 'gzip'
+    return resp
+
+
 def get_request_data(force_json=False):
     if request.method == 'GET':
         return request.args.to_dict()
@@ -70,14 +78,38 @@ def jsonp(resp, callback):
     )
 
 
+_datetime_fmt = '%Y-%m-%d %H:%M:%S'
+
+
+def _json_default(o):
+    if isinstance(o, decimal.Decimal):
+        return float(o)
+    if isinstance(o, datetime.timedelta):
+        return o.total_seconds()
+    if isinstance(o, datetime.date):
+        return o.isoformat()
+    if hasattr(o, 'as_json_serializable'):
+        return o.as_json_serializable()
+    return o
+
+
+def json_default(o):
+    """usage: json.dumps(some_o, default=json_default)"""
+    o = _json_default(o)
+    if isinstance(o, str):
+        return o
+    if isinstance(o, datetime.datetime):
+        return o.strftime(_datetime_fmt)
+    return str(o)
+
+
 class JSONEncoderPlus(flask.json.JSONEncoder):
+    datetime_fmt = _datetime_fmt
+
     def default(self, o):
-        if hasattr(o, 'as_json_serializable'):
-            return o.as_json_serializable()
-        if isinstance(o, decimal.Decimal):
-            return float(o)
-        if isinstance(o, datetime.timedelta):
-            return o.total_seconds()
-        if isinstance(o, (datetime.datetime, datetime.date)):
-            return o.isoformat()
+        o = _json_default(o)
+        if isinstance(o, str):
+            return o
+        if isinstance(o, datetime.datetime):
+            return o.strftime(self.datetime_fmt)
         return super(JSONEncoderPlus, self).default(o)
