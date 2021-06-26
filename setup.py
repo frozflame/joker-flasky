@@ -12,7 +12,7 @@ from setuptools import setup, find_namespace_packages
 
 namespace = 'joker'
 package_name = 'flasky'
-description = 'Reusable components for flask-based web development'
+description = 'reusable components for flask-based web development'
 
 
 def read(filename):
@@ -52,16 +52,20 @@ config = {
     'classifiers': [
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.0',
-        'Programming Language :: Python :: 3.1',
-        'Programming Language :: Python :: 3.2',
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
     ],
     # ensure copy static file to runtime directory
     'include_package_data': True,
+    'long_description': read('README.md'),
+    'long_description_content_type': "text/markdown",
 }
 
 if namespace:
