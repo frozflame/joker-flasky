@@ -12,5 +12,5 @@ class GlobalInterface(volkanic.GlobalInterface):
 
     @cached_property
     def mime_types(self) -> dict:
-        path = self.under_package_dir('kb/mimetypes.json')
+        path = self.under_package_dir('kb/mime-types.json')
         return json.load(open(path))

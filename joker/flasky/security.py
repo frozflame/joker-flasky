@@ -1,12 +1,8 @@
 #!/usr/bin/env python3
 # coding: utf-8
 
-from __future__ import unicode_literals, print_function
-
 import hashlib
 import time
-
-from joker.cast import want_bytes, want_unicode
 
 
 def _make_salt():
@@ -14,28 +10,28 @@ def _make_salt():
 
 
 class HashedPassword(object):
-    def __init__(self, digest, algo, salt):
+    def __init__(self, digest: str, algo: str, salt: str):
         self.digest = digest
         self.algo = algo
         self.salt = salt
 
     @classmethod
-    def parse(cls, s):
-        digest, algo, salt = s.split(':')
+    def parse(cls, hp_string: str):
+        digest, algo, salt = hp_string.split(':')
         return cls(digest, algo, salt)
 
     @classmethod
-    def generate(cls, password, algo='sha256', salt=None):
+    def generate(cls, password: str, algo: str = 'sha256', salt: str = None):
         if salt is None:
             salt = _make_salt()
-        p = want_bytes(password)
-        s = want_bytes(salt)
+        p = password.encode('utf-8')
+        s = salt.encode('utf-8')
         h = hashlib.new(algo, p + s)
-        return cls(h.hexdigest(), algo, want_unicode(salt))
+        return cls(h.hexdigest(), algo, salt)
 
     def __str__(self):
         return '{}:{}:{}'.format(self.digest, self.algo, self.salt)
 
-    def verify(self, password):
+    def verify(self, password: str):
         hp1 = self.generate(password, self.algo, self.salt)
         return self.digest == hp1.digest
