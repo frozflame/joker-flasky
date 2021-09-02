@@ -1,4 +1,4 @@
 flask
 pyyaml
 joker>=0.2.2
-volkanic>=0.3.3
+volkanic>=0.3.6
