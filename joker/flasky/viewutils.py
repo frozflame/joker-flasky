@@ -89,16 +89,17 @@ def _json_default(o):
         return o.total_seconds()
     if isinstance(o, datetime.date):
         return o.isoformat()
-    if hasattr(o, 'as_json_serializable'):
+    if callable(getattr(o, 'as_json_serializable', None)):
         return o.as_json_serializable()
-    return o
+    raise TypeError
 
 
 def json_default(o):
     """usage: json.dumps(some_o, default=json_default)"""
-    o = _json_default(o)
-    if isinstance(o, str):
-        return o
+    try:
+        return _json_default(o)
+    except TypeError:
+        pass
     if isinstance(o, datetime.datetime):
         return o.strftime(_datetime_fmt)
     return str(o)
@@ -108,12 +109,13 @@ class JSONEncoderPlus(flask.json.JSONEncoder):
     datetime_fmt = _datetime_fmt
 
     def default(self, o):
-        o = _json_default(o)
-        if isinstance(o, str):
-            return o
+        try:
+            return _json_default(o)
+        except TypeError:
+            pass
         if isinstance(o, datetime.datetime):
             return o.strftime(self.datetime_fmt)
-        return super(JSONEncoderPlus, self).default(o)
+        return super().default(o)
 
 
 def infer_mime_type(filename: str, default="text/plain") -> str:
