@@ -3,7 +3,7 @@
 
 import flask
 
-from joker.flasky.viewutils import JSONEncoderPlus
+from joker.flasky import viewutils
 
 
 def decorate_all_view_funcs(app, decorator):
@@ -14,7 +14,6 @@ def decorate_all_view_funcs(app, decorator):
 
 
 class FlaskPlus(flask.Flask):
-    json_encoder = JSONEncoderPlus
-
-    def decorate_all_view_funcs(self, decorator):
-        decorate_all_view_funcs(self, decorator)
+    json_encoder = viewutils.JSONEncoderPlus
+    decorate_all_view_funcs = decorate_all_view_funcs
+    serialize_current_session = viewutils.serialize_current_session
