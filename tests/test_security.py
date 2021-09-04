@@ -3,7 +3,7 @@
 
 from __future__ import unicode_literals
 
-from joker.flasky.security import HashedPassword
+from joker.flasky.auth import HashedPassword
 
 
 def test_hashed_password():

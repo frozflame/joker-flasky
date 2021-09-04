@@ -9,6 +9,7 @@ from typing import Optional
 
 import flask
 import flask.sessions
+# noinspection PyPackageRequirements
 import itsdangerous
 from flask import Flask, Request
 
