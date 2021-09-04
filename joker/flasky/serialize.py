@@ -3,8 +3,9 @@
 
 import warnings
 
-from joker.flasky.viewutils import JSONEncoderPlus, jsonp
 from volkanic.utils import indented_json_dumps, indented_json_print
+
+from joker.flasky.viewutils import JSONEncoderPlus, jsonp
 
 _warning = """\
 joker.flasky.serialize is deprecated, please consider use
@@ -19,9 +20,10 @@ warnings.warn(
     DeprecationWarning
 )
 
-__all__ = [
-    'JSONEncoderPlus',
-    'jsonp',
-    'indented_json_dumps',
-    'indented_json_print',
+__all__ = []
+__deprecated__ = [
+    JSONEncoderPlus,
+    jsonp,
+    indented_json_dumps,
+    indented_json_print,
 ]

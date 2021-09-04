@@ -134,3 +134,9 @@ class LoginInterfaceBase(metaclass=RequestBoundSingletonMeta):
                 r'^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}$',
                 login_name):
             return 'email'
+
+
+__all__ = [
+    'HashedPassword', 'LoginInterfaceBase',
+    'ExtendableSessionInterface'
+]

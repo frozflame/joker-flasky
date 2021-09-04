@@ -4,8 +4,10 @@
 import logging
 from logging import Handler, LogRecord
 
-from joker.flasky.errors import ErrorInfo
+import orjson
 from redis import Redis
+
+from joker.flasky.errors import ErrorInfo
 
 
 class RedisHandler(Handler):
@@ -54,7 +56,7 @@ class ErrorInterface:
         pipe.execute()
 
     def query(self, error_key: str) -> dict:
-        dinfo = gi.redis.get(f'{self.prefix}.err.{error_key}')
+        dinfo = self.redis.get(f'{self.prefix}.err.{error_key}')
         if not dinfo:
             return {}
         return orjson.loads(dinfo)

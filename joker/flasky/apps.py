@@ -17,3 +17,6 @@ class FlaskPlus(flask.Flask):
     json_encoder = viewutils.JSONEncoderPlus
     decorate_all_view_funcs = decorate_all_view_funcs
     serialize_current_session = viewutils.serialize_current_session
+
+
+__all__ = ['FlaskPlus', 'decorate_all_view_funcs']
