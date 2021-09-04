@@ -2,7 +2,7 @@
 # coding: utf-8
 
 """
-Deprecated
+Deprecated. This module will be removed on ver 0.6.0.
 """
 
 from joker.flasky.auth import HashedPassword

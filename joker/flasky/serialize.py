@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 # coding: utf-8
 
+"""
+Deprecated. This module will be removed on ver 0.6.0.
+"""
+
 import warnings
 
 from volkanic.utils import indented_json_dumps, indented_json_print
