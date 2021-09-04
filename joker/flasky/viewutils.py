@@ -64,6 +64,8 @@ def respond_xaccel_redirect(path: str, filename: str = None):
         'Content-Disposition':
             f'attachment; filename={filename}' if filename else 'inline',
     }
+    for k, v in headers.values():
+        resp.headers[k] = v
     return resp
 
 
