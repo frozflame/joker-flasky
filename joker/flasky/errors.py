@@ -27,11 +27,13 @@ C2Error = TechnicalError
 
 
 class ErrorInfo(volkanic.introspect.ErrorInfo):
+    message = 'Application Error'
+
     def to_dict(self, code=3):
         if isinstance(self.exc, volkanic.introspect.ErrorBase):
             return self.exc.to_dict()
         return {
             'code': code,
             'error_key': self.error_key,
-            'message': f'出错了ಥ_ಥ <{self.error_key}>',
+            'message': f'{self.message} <{self.error_key}>',
         }
