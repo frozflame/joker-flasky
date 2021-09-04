@@ -172,6 +172,10 @@ def is_mobile():
     return _regex_ua_mobile.search(ua)
 
 
+def is_wechat():
+    return 'micromessenger' in flask.request.user_agent.string.lower()
+
+
 def decorate_all_view_funcs(app, decorator):
     keys = list(app.view_functions)
     for key in keys:
