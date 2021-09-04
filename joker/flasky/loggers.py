@@ -2,6 +2,7 @@
 # coding: utf-8
 
 import logging
+import traceback
 from logging import Handler, LogRecord
 
 import orjson
@@ -38,25 +39,43 @@ class RedisHandler(Handler):
 
 
 class ErrorInterface:
-    def __init__(self, redis: Redis, prefix: str, limit=1000, ttl=3600):
+    def __init__(
+            self, redis: Redis, prefix: str,
+            ttl=3600, limit=1000, query_url=None):
         self.redis = redis
         self.prefix = prefix
-        self.limit = limit
         self.ttl = ttl
+        self.limit = limit
+        self.query_url = query_url
 
-    def dump(self, errinfo: ErrorInfo):
+    def _dump(self, errinfo: ErrorInfo):
         ek = errinfo.error_key
         if self.redis.incr(f'{self.prefix}.err-count.{ek}') > 1:
             return
-        dinfo = orjson.dumps(errinfo.debug_info)
+        debug_text = orjson.dumps(errinfo.debug_info)
         pipe = self.redis.pipeline()
-        pipe.setex(f'{self.prefix}.err-debug.{ek}', self.ttl, dinfo)
+        pipe.setex(f'{self.prefix}.err-debug.{ek}', self.ttl, debug_text)
         pipe.lpush(f'{self.prefix}.err-queue', ek)
         pipe.ltrim(f'{self.prefix}.err-queue', 0, self.limit)
         pipe.execute()
 
+    def fmt_url(self, error_key: str):
+        if isinstance(self.query_url, str):
+            return self.query_url + error_key
+        elif callable(self.query_url):
+            return self.query_url(error_key)
+
+    def dump(self):
+        traceback.print_exc()
+        errinfo = ErrorInfo()
+        self._dump(errinfo)
+        errdict = errinfo.to_dict()
+        if url := self.fmt_url(errinfo.error_key):
+            errdict['_url'] = url
+        return errdict
+
     def query(self, error_key: str) -> dict:
-        dinfo = self.redis.get(f'{self.prefix}.err.{error_key}')
+        dinfo = self.redis.get(f'{self.prefix}.err-debug.{error_key}')
         if not dinfo:
             return {}
         return orjson.loads(dinfo)

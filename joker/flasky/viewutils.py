@@ -170,3 +170,10 @@ def is_mobile():
     )
     ua = flask.request.headers.get('User-Agent', '')
     return _regex_ua_mobile.search(ua)
+
+
+def decorate_all_view_funcs(app, decorator):
+    keys = list(app.view_functions)
+    for key in keys:
+        func = app.view_functions[key]
+        app.view_functions[key] = decorator(func)
