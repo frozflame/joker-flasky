@@ -1,13 +1,19 @@
 #!/usr/bin/env python3
 # coding: utf-8
 
-import flask
-import re
+import functools
 import hashlib
+import re
 import time
+from typing import Optional
+
+import flask
+import flask.sessions
+import itsdangerous
+from flask import Flask, Request
+
 from joker.flasky import errors, viewutils
 from joker.flasky.viewutils import RequestBoundSingletonMeta
-import functools
 
 
 def _make_salt():
@@ -40,6 +46,34 @@ class HashedPassword(object):
     def verify(self, password: str):
         hp1 = self.generate(password, self.algo, self.salt)
         return self.digest == hp1.digest
+
+
+class ExtendableSessionInterface(flask.sessions.SecureCookieSessionInterface):
+    def _get_session_string(self, app, request):
+        return request.cookies.get(self.get_cookie_name(app))
+
+    def open_session(self, app: Flask, request: Request) \
+            -> Optional[flask.sessions.SecureCookieSession]:
+        """
+        Almost identical to
+        `flask.sessions.SecureCookieSessionInterface.open_session()`
+        except for calling `self._get_session_string()` instead of
+        get the session string directly from `request.cookies`.
+        """
+        ss = self.get_signing_serializer(app)
+        if ss is None:
+            return None
+        # different from flask.sessions.SecureCookieSessionInterface:
+        # val = request.cookies.get(self.get_cookie_name(app))
+        val = self._get_session_string(app, request)
+        if not val:
+            return self.session_class()
+        max_age = int(app.permanent_session_lifetime.total_seconds())
+        try:
+            data = ss.loads(val, max_age=max_age)
+            return self.session_class(data)
+        except itsdangerous.BadSignature:
+            return self.session_class()
 
 
 class LoginInterfaceBase(metaclass=RequestBoundSingletonMeta):

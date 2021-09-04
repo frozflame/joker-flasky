@@ -144,6 +144,23 @@ class JSONEncoderPlus(flask.json.JSONEncoder):
         return super().default(o)
 
 
+def serialize_current_session(app: flask.Flask = None):
+    if app is None:
+        app = flask.current_app
+    ss = app.session_interface.get_signing_serializer(app)
+    return ss.dumps(dict(flask.session))
+
+
+class RequestBoundSingletonMeta(type):
+    def __call__(cls, *args, **kwargs):
+        cache = flask.g.setdefault('request_bound_cache', {})
+        try:
+            return cache[cls]
+        except KeyError:
+            obj = super().__call__(*args, **kwargs)
+            return cache.setdefault(cls, obj)
+
+
 def is_mobile():
     _regex_ua_mobile = re.compile(
         "Mobile|iP(hone|od|ad)|Android|BlackBerry|IEMobile|Kindle"
