@@ -99,9 +99,9 @@ class ReducedRestfulView(flask.views.MethodView, _ReducedViewMixin):
     pass
 
 
-def jsonp(resp, callback):
+def jsonp(data, callback):
     return flask.current_app.response_class(
-        callback + '(' + flask.json.dumps(resp) + ');\n',
+        callback + '(' + flask.json.dumps(data) + ');\n',
         mimetype='application/javascript'
     )
 

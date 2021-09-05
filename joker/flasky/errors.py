@@ -8,11 +8,11 @@ class KnownError(volkanic.introspect.ErrorBase):
     pass
 
 
-class OperationalError(KnownError):
+class ManualError(KnownError):
     extra = {'code': 1}
 
 
-C1Error = OperationalError
+C1Error = ManualError
 
 
 class TechnicalError(KnownError):

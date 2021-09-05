@@ -96,7 +96,7 @@ class LoginInterfaceBase(metaclass=RequestBoundSingletonMeta):
         elif user_id := cls._get_default_user_id():
             return user_id
         else:
-            raise errors.OperationalError(cls._not_logged_in_message)
+            raise errors.ManualError(cls._not_logged_in_message)
 
     @classmethod
     def check(cls):
