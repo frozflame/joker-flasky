@@ -8,7 +8,6 @@ import re
 
 import flask
 import flask.views
-from flask import request
 from volkanic.utils import merge_dicts
 
 
@@ -69,6 +68,7 @@ def respond_xaccel_redirect(path: str, filename: str = None):
 
 
 def get_request_data(force_json=False):
+    request = flask.request
     if request.method == 'GET':
         return request.args.to_dict()
     if force_json or request.is_json:
@@ -181,3 +181,8 @@ def decorate_all_view_funcs(app, decorator):
     for key in keys:
         func = app.view_functions[key]
         app.view_functions[key] = decorator(func)
+
+
+def url_for_this(**values):
+    # https://github.com/pallets/flask/issues/2111
+    return flask.url_for(flask.request.endpoint, **values)
