@@ -35,6 +35,7 @@ class SchemaOutliner:
         (int, 'integer'),
         (float, 'number'),
         (list, 'array'),
+        (dict, 'object'),
         (str, 'string'),
     ]
 
