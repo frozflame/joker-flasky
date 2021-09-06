@@ -25,7 +25,7 @@ def validate(data, schema, *args, **kwargs):
         jsonschema.validate(data, schema, *args, **kwargs)
     except jsonschema.ValidationError as ve:
         if msg := ve.schema.get('errmsg'):
-            raise errors.ManualError(msg)
+            raise errors.BusinessError(msg)
         raise errors.TechnicalError(ve.absolute_path[-1], 'ValidationError')
 
 
