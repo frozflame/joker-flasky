@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # coding: utf-8
 
-from volkanic.utils import indented_json_dumps
+from volkanic.utils import indented_json_dumps, select_from_dict
 
 
 def smart_json_dumps(obj, llen=60):
@@ -29,11 +29,7 @@ def markdown_fmt_web_api(method: str, path: str, *json_blks):
 
 
 def markdown_print_web_api(*args, **kwargs):
-    # TODO: a function to collect print func kwargs
-    print_kwargs = {}
     print_keywords = ['sep', 'end', 'file', 'flush']
-    for key in print_keywords:
-        if key in kwargs:
-            print_kwargs[key] = kwargs.pop(key)
-    print(markdown_fmt_web_api(*args, **kwargs), **print_keywords)
-    print('-' * 60, **print_keywords)
+    print_kwargs = select_from_dict(kwargs, print_keywords, pop=True)
+    print(markdown_fmt_web_api(*args, **kwargs), **print_kwargs)
+    print('-' * 60, **print_kwargs)
