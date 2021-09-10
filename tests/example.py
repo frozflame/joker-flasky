@@ -19,10 +19,7 @@ class _GlocalInterface(volkanic.GlobalInterface):
 
     @cached_property
     def error_interface(self):
-        return ErrorInterface(
-            self.redis, self.project_name,
-            query_url='http://127.0.0.1:5000/admin/e/'
-        )
+        return ErrorInterface(self.redis, self.project_name)
 
 
 gi = _GlocalInterface()

@@ -37,14 +37,10 @@ def admin_site_map():
 def admin_query_error(error_key: str):
     ei = getattr(current_app, 'error_interface')
     if isinstance(ei, ErrorInterface):
-        info = ei.query(error_key)
-        exc = info.get("exc")
         if 'i' in flask.request.args:
-            if isinstance(exc, str):
-                info['excl'] = exc.splitlines()
-            return info
+            return ei.query(error_key, human=True)
         url = flask.url_for(
             flask.request.url_rule.endpoint,
-            error_key=error_key
+            error_key=error_key, i='',
         )
-        return f'<pre>{exc}<br/><a href="{url}?i">{error_key}</a></pre>'
+        return ei.query_html(error_key, url)

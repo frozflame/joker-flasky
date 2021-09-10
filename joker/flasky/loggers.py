@@ -39,14 +39,11 @@ class RedisHandler(Handler):
 
 
 class ErrorInterface:
-    def __init__(
-            self, redis: Redis, prefix: str,
-            ttl=3600, limit=1000, query_url=None):
+    def __init__(self, redis: Redis, prefix: str, limit=1000, ttl=3600):
         self.redis = redis
         self.prefix = prefix
-        self.ttl = ttl
         self.limit = limit
-        self.query_url = query_url
+        self.ttl = ttl
 
     def _dump(self, errinfo: ErrorInfo):
         ek = errinfo.error_key
@@ -59,26 +56,29 @@ class ErrorInterface:
         pipe.ltrim(f'{self.prefix}.err-queue', 0, self.limit)
         pipe.execute()
 
-    def fmt_url(self, error_key: str):
-        if isinstance(self.query_url, str):
-            return self.query_url + error_key
-        elif callable(self.query_url):
-            return self.query_url(error_key)
-
-    def dump(self):
+    def dump(self) -> ErrorInfo:
         traceback.print_exc()
         errinfo = ErrorInfo()
         self._dump(errinfo)
-        errdict = errinfo.to_dict()
-        if url := self.fmt_url(errinfo.error_key):
-            errdict['_url'] = url
-        return errdict
+        return errinfo
 
-    def query(self, error_key: str) -> dict:
-        dinfo = self.redis.get(f'{self.prefix}.err-debug.{error_key}')
-        if not dinfo:
+    def query(self, error_key: str, human=False) -> dict:
+        debug_text = self.redis.get(f'{self.prefix}.err-debug.{error_key}')
+        if not debug_text:
             return {}
-        return orjson.loads(dinfo)
+        info = orjson.loads(debug_text)
+        if human:
+            exc = info.get('exc', '')
+            if isinstance(exc, str):
+                info['excl'] = exc.splitlines()
+        return info
+
+    def query_html(self, error_key: str, url=None):
+        info = self.query(error_key)
+        exc = info.get('exc')
+        if not url:
+            return f'<pre>{exc}<br/><a>{error_key}</a></pre>'
+        return f'<pre>{exc}<br/><a href="{url}">{error_key}</a></pre>'
 
 
 __all__ = ['ErrorInterface', 'RedisHandler']
