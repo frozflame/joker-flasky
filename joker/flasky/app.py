@@ -4,6 +4,7 @@
 import flask
 # noinspection PyPackageRequirements
 import werkzeug.exceptions
+
 from joker.flasky import errors, viewutils
 from joker.flasky.loggers import ErrorInterface
 from joker.flasky.viewutils import decorate_all_view_funcs
@@ -17,7 +18,15 @@ class Application(flask.Flask):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.error_interface = None
-        self.error_key_query_endpoint = None
+
+    def fmt_error_key_query_url(self, error_key: str, **kwargs):
+        bp = self.blueprints.get('_admin')
+        if not bp or bp.import_name != 'joker.flasky.views.admin_views':
+            return
+        return flask.url_for(
+            '_admin.admin_query_error',
+            error_key=error_key, _external=True, **kwargs
+        )
 
     def use_default_error_handlers(self, error_interface: ErrorInterface):
         if self.error_interface is not None:
@@ -33,7 +42,11 @@ class Application(flask.Flask):
             # https://flask.palletsprojects.com/en/2.0.x/errorhandling/#generic-exception-handlers
             if isinstance(error, werkzeug.exceptions.HTTPException):
                 return error
-            return error_interface.dump()
+            errinfo = error_interface.dump()
+            info = errinfo.to_dict()
+            if url := self.fmt_error_key_query_url(errinfo.error_key):
+                info['_url'] = url
+            return info
 
 
 __all__ = ['Application']
