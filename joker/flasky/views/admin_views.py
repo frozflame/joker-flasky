@@ -20,6 +20,19 @@ def admin_g():
     return vars(flask.g)
 
 
+@bp.route('/echo', methods=['GET', 'POST'])
+def admin_echo():
+    flask.session['a'] = 1
+    return {
+        # '_': vars(flask.request),
+        'method': flask.request.method,
+        'headers': dict(flask.request.headers),
+        'args': flask.request.args,
+        'json': flask.request.json,
+        'form': flask.request.form,
+    }
+
+
 @bp.route('/site-map')
 def admin_site_map():
     """

@@ -3,11 +3,12 @@
 
 from functools import cached_property
 
-import joker.flasky.views.admin_views
 import volkanic
+from redis import Redis
+
+import joker.flasky.views.admin_views
 from joker.flasky.app import Application
 from joker.flasky.loggers import ErrorInterface
-from redis import Redis
 
 
 class _GlocalInterface(volkanic.GlobalInterface):
@@ -23,9 +24,9 @@ class _GlocalInterface(volkanic.GlobalInterface):
 
 
 gi = _GlocalInterface()
-
 app = Application(__name__)
 app.use_default_error_handlers(gi.error_interface)
 app.register_blueprint(joker.flasky.views.admin_views.bp, url_prefix='/admin')
 
-app.run()
+if __name__ == '__main__':
+    app.run()
