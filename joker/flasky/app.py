@@ -19,15 +19,6 @@ class Application(flask.Flask):
         super().__init__(*args, **kwargs)
         self.error_interface = None
 
-    def fmt_error_key_query_url(self, error_key: str, **kwargs):
-        bp = self.blueprints.get('_admin')
-        if not bp or bp.import_name != 'joker.flasky.views.admin_views':
-            return
-        return flask.url_for(
-            '_admin.admin_query_error',
-            error_key=error_key, _external=True, **kwargs
-        )
-
     def use_default_error_handlers(self, error_interface: ErrorInterface):
         if self.error_interface is not None:
             return
@@ -43,10 +34,7 @@ class Application(flask.Flask):
             if isinstance(error, werkzeug.exceptions.HTTPException):
                 return error
             errinfo = error_interface.dump()
-            info = errinfo.to_dict()
-            if url := self.fmt_error_key_query_url(errinfo.error_key):
-                info['_url'] = url
-            return info
+            return errinfo.to_dict()
 
 
 __all__ = ['Application']
