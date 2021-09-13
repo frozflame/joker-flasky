@@ -62,6 +62,10 @@ class ErrorInterface:
         self._dump(errinfo)
         return errinfo
 
+    def query_recent_error_keys(self, n=7):
+        keys = self.redis.lrange(f'{self.prefix}.err-queue', 0, n)
+        return [k.decode('utf-8') for k in keys]
+
     def query(self, error_key: str, human=False) -> dict:
         debug_text = self.redis.get(f'{self.prefix}.err-debug.{error_key}')
         if not debug_text:
