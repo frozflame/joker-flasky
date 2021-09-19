@@ -114,12 +114,12 @@ class LoginInterfaceBase(metaclass=RequestBoundSingletonMeta):
         return _func
 
     @classmethod
-    def _login(cls, user_id):
+    def login(cls, user_id):
         flask.session[cls._user_id_session_key] = user_id
         return cls(user_id)
 
     @classmethod
-    def _logout(cls):
+    def logout(cls):
         flask.session.pop(cls._user_id_session_key)
 
     @staticmethod
