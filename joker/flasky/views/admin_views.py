@@ -45,6 +45,21 @@ def _echo():
     }
 
 
+@bp.route('/r')
+def admin_raise_error():
+    raise RuntimeError('error raised intentionally')
+
+
+@bp.route('/g')
+def admin_g():
+    return vars(flask.g)
+
+
+@bp.route('/echo', methods=['GET', 'POST'])
+def admin_echo():
+    return _echo()
+
+
 @bp.route('/site-map')
 def admin_site_map():
     """
