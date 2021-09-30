@@ -39,7 +39,7 @@ class RedisHandler(Handler):
 
 
 class ErrorInterface:
-    def __init__(self, redis: Redis, prefix: str, limit=1000, ttl=3600):
+    def __init__(self, redis: Redis, prefix: str, limit=1000, ttl=86400):
         self.redis = redis
         self.prefix = prefix
         self.limit = limit
