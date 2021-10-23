@@ -3,6 +3,8 @@
 
 import datetime
 import decimal
+from typing import Union
+import functools
 import mimetypes
 import re
 
@@ -106,43 +108,61 @@ def jsonp(data, callback):
     )
 
 
-_datetime_fmt = '%Y-%m-%d %H:%M:%S'
+def fmt_datetime(o: datetime.datetime):
+    if isinstance(o, datetime.datetime):
+        return o.strftime('%Y-%m-%d %H:%M:%S')
+    raise TypeError
 
 
-def _json_default(o):
+def json_default_strict(o):
     if isinstance(o, decimal.Decimal):
         return float(o)
     if isinstance(o, datetime.timedelta):
         return o.total_seconds()
-    if isinstance(o, datetime.date) and not isinstance(o, datetime.datetime):
+    if isinstance(o, datetime.datetime):
+        return o.strftime('%Y-%m-%d %H:%M:%S')
+    if isinstance(o, datetime.date):
         return o.isoformat()
     if hasattr(o, 'as_json_serializable'):
         return o.as_json_serializable()
     raise TypeError
 
 
+def call_json_default_functions(o, funcs: Union[tuple, list] = None):
+    funcs = funcs or []
+    for func in funcs:
+        try:
+            return func(o)
+        except TypeError:
+            continue
+    raise TypeError
+
+
 def json_default(o):
     """usage: json.dumps(some_o, default=json_default)"""
-    try:
-        return _json_default(o)
-    except TypeError:
-        pass
-    if isinstance(o, datetime.datetime):
-        return o.strftime(_datetime_fmt)
-    return str(o)
+    funcs = [json_default_strict, str]
+    return call_json_default_functions(o, funcs)
+
+
+def chain_json_default_functions(*funcs):
+    return functools.partial(call_json_default_functions, funcs=funcs)
 
 
 class JSONEncoderPlus(flask.json.JSONEncoder):
-    datetime_fmt = _datetime_fmt
+    json_default_funcs = [json_default_strict, str]
 
     def default(self, o):
         try:
-            return _json_default(o)
+            return call_json_default_functions(o, self.json_default_funcs)
         except TypeError:
-            pass
-        if isinstance(o, datetime.datetime):
-            return o.strftime(self.datetime_fmt)
-        return super().default(o)
+            return super().default(o)
+
+
+def get_json_encoder(*json_default_funcs):
+    # bases should be a tuple
+    bases = JSONEncoderPlus,
+    attrs = {'json_default_funcs': list(json_default_funcs)}
+    return type('JSONEncoderExtended', bases, attrs)
 
 
 def serialize_current_session(app: flask.Flask = None):
