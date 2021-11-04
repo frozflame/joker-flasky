@@ -55,6 +55,12 @@ def respond_with_pre_gzipped(content: bytes, content_type=None):
     return resp
 
 
+def respond_binary(content: bytes, content_type: str):
+    resp = flask.make_response(content)
+    resp.headers.set('Content-Type', content_type)
+    return resp
+
+
 def respond_xaccel_redirect(path: str, filename: str = None):
     # nginx: http://wiki.nginx.org/NginxXSendfile
     resp = flask.make_response()
