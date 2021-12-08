@@ -3,7 +3,7 @@
 
 import jsonschema
 
-from joker.flasky import errors
+from joker.environ import errors
 
 
 def make_object_schema(properties: dict, **kwargs):

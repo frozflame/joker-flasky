@@ -4,7 +4,7 @@
 import flask
 from flask import Blueprint, current_app
 
-from joker.flasky.loggers import ErrorInterface
+from joker.redis.loggers import ErrorInterface
 from joker.flasky.viewutils import respond, respond_plain_text
 
 bp = Blueprint('_admin', __name__)

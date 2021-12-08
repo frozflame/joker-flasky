@@ -5,8 +5,9 @@ import flask
 # noinspection PyPackageRequirements
 import werkzeug.exceptions
 
-from joker.flasky import errors, viewutils
-from joker.flasky.loggers import ErrorInterface
+from joker.environ import errors
+from joker.flasky import viewutils
+from joker.redis.error import ErrorInterface
 from joker.flasky.viewutils import decorate_all_view_funcs
 
 

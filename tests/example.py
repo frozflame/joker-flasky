@@ -8,7 +8,7 @@ from redis import Redis
 
 import joker.flasky.views.admin_views
 from joker.flasky.app import Application
-from joker.flasky.loggers import ErrorInterface
+from joker.redis.loggers import ErrorInterface
 
 
 class _GlocalInterface(volkanic.GlobalInterface):
