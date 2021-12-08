@@ -10,21 +10,13 @@ from setuptools import setup, find_namespace_packages
 # import joker; exit(1)
 # DO NOT import your package from your setup.py
 
-namespace = 'joker'
-package_name = 'flasky'
-description = 'reusable components for flask-based web development'
-
-
 def read(filename):
     with open(filename) as f:
         return f.read()
 
 
 def version_find():
-    if namespace:
-        path = '{}/{}/__init__.py'.format(namespace, package_name)
-    else:
-        path = '{}/__init__.py'.format(package_name)
+    path = 'joker/flasky/__init__.py'
     root = os.path.dirname(__file__)
     path = os.path.join(root, path)
     regex = re.compile(
@@ -41,12 +33,13 @@ def version_find():
 
 
 config = {
-    'name': '{}-{}'.format(namespace, package_name),
+    'name': 'joker-flasky',
     'version': version_find(),
-    'description': '' + description,
+    'description': 'reusable components for flask-based web development',
     'keywords': '',
     'license': "GNU General Public License (GPL)",
     'packages': find_namespace_packages(include=['joker.*']),
+    'namespace_packages': ['joker'],
     'zip_safe': False,
     'install_requires': read("requirements.txt"),
     'classifiers': [
@@ -64,8 +57,4 @@ config = {
     'long_description_content_type': "text/markdown",
 }
 
-if namespace:
-    config['namespace_packages'] = [namespace]
-
 setup(**config)
-
