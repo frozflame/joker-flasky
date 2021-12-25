@@ -28,5 +28,6 @@ app = Application(__name__)
 app.use_default_error_handlers(gi.error_interface)
 app.register_blueprint(joker.flasky.views.admin_views.bp, url_prefix='/admin')
 
+
 if __name__ == '__main__':
     app.run()

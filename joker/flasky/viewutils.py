@@ -3,10 +3,10 @@
 
 import datetime
 import decimal
-from typing import Union
 import functools
 import mimetypes
 import re
+from typing import Union
 
 import flask
 import flask.views
@@ -41,24 +41,36 @@ def respond(*args, **kwargs):
     return resp
 
 
-def respond_plain_text(text: str):
-    resp = flask.make_response(text, 200)
-    resp.mimetype = "text/plain"
-    return resp
+def respond_content(
+        content: Union[bytes, str],
+        mimetype: str = None,
+        headers: dict = None):
+    resp = flask.make_response(content, 200)
+    if headers:
+        for key, val in headers.items():
+            resp.headers.set(key, val)
+    if mimetype:
+        resp.mimetype = mimetype
+    elif isinstance(content, str):
+        resp.mimetype = "text/plain"
+    else:
+        resp.mimetype = 'application/octet-stream'
 
 
-def respond_with_pre_gzipped(content: bytes, content_type=None):
+def respond_plain_text(text: str, headers: dict = None):
+    return respond_content(text, "text/plain", headers)
+
+
+def respond_with_pre_gzipped(
+        content: bytes, content_type=None, headers: dict = None):
     content_type = content_type or 'text/plain'
-    resp = flask.make_response(content)
-    resp.headers.set('Content-Type', content_type)
-    resp.headers['Content-Encoding'] = 'gzip'
-    return resp
+    headers = headers or {}
+    headers['Content-Encoding'] = 'gzip'
+    return respond_content(content, content_type, headers)
 
 
-def respond_binary(content: bytes, content_type: str):
-    resp = flask.make_response(content)
-    resp.headers.set('Content-Type', content_type)
-    return resp
+def respond_binary(content: bytes, content_type: str, headers: dict = None):
+    return respond_content(content, content_type, headers)
 
 
 def respond_xaccel_redirect(path: str, filename: str = None):
