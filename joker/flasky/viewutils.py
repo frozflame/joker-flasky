@@ -13,10 +13,15 @@ import flask.views
 from volkanic.utils import merge_dicts
 
 
-def infer_mime_type(filename: str, default="text/plain") -> str:
-    if filename.startswith('.'):
+def infer_mimetype(filename: str, default="text/plain") -> str:
+    if '.' not in filename:
+        filename = '_.' + filename
+    elif filename.startswith('.'):
         filename = '_' + filename
     return mimetypes.guess_type(filename)[0] or default
+
+
+infer_mime_type = infer_mimetype
 
 
 def respond(*args, **kwargs):
