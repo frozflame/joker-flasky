@@ -60,6 +60,7 @@ def respond_content(
         resp.mimetype = "text/plain"
     else:
         resp.mimetype = 'application/octet-stream'
+    return resp
 
 
 def respond_plain_text(text: str, headers: dict = None):

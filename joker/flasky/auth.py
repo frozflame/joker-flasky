@@ -12,8 +12,8 @@ import flask.sessions
 # noinspection PyPackageRequirements
 import itsdangerous
 from flask import Flask, Request
+from volkanic import errors
 
-from joker.environ import errors
 from joker.flasky import viewutils
 from joker.flasky.viewutils import RequestBoundSingletonMeta
 

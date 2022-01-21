@@ -3,8 +3,9 @@
 
 import importlib
 
-from volkanic.environ import GlobalInterface
 from volkanic.introspect import find_all_plain_modules
+
+from joker.flasky.environ import GlobalInterface  # noqa
 
 gi = GlobalInterface()
 

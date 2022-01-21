@@ -3,7 +3,7 @@
 
 import jsonschema
 
-from joker.environ import errors
+from volkanic import errors
 
 
 def make_object_schema(properties: dict, **kwargs):

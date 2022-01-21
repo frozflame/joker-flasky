@@ -4,10 +4,10 @@
 import flask
 # noinspection PyPackageRequirements
 import werkzeug.exceptions
-
-from joker.environ import errors
-from joker.flasky import viewutils
 from joker.redis.error import ErrorInterface
+from volkanic import errors
+
+from joker.flasky import viewutils
 from joker.flasky.viewutils import decorate_all_view_funcs
 
 

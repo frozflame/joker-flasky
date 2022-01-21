@@ -13,6 +13,9 @@ class Rumor(object):
     def __init__(self, **attributes):
         self.attributes = attributes
 
+    def __str__(self):
+        return str(random.randrange(10000))
+
     def __getattr__(self, item):
         try:
             return self.attributes[item]
