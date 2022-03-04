@@ -151,7 +151,7 @@ class URLPathSigner:
         _, t, s = signed_path.rsplit('.', maxsplit=2)
         query = dict(parse_qsl(u.query))
         query['sig'] = f'{t}.{s}'
-        u._replace(query=urlencode(u.query))
+        u = u._replace(query=urlencode(query))
         return urlunparse(u)
 
     def verify(self, url: str, sig: str = None) -> bool:
