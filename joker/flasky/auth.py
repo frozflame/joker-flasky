@@ -6,12 +6,14 @@ import hashlib
 import re
 import time
 from typing import Optional
+from urllib.parse import urlparse, urlunparse, parse_qsl, urlencode
 
 import flask
 import flask.sessions
 # noinspection PyPackageRequirements
 import itsdangerous
 from flask import Flask, Request
+from itsdangerous import TimestampSigner, BadSignature
 from volkanic import errors
 
 from joker.flasky import viewutils
@@ -138,7 +140,34 @@ class LoginInterfaceBase(metaclass=RequestBoundSingletonMeta):
             return 'email'
 
 
+class URLPathSigner:
+    def __init__(self, secrets, max_age=None):
+        self.timed_signer = TimestampSigner(secrets, salt=b'joker-flasky!')
+        self.max_age = max_age
+
+    def sign(self, url: str):
+        u = urlparse(url)
+        signed_path = self.timed_signer.sign(u.path).decode()
+        _, t, s = signed_path.rsplit('.', maxsplit=2)
+        query = dict(parse_qsl(u.query))
+        query['sig'] = f'{t}.{s}'
+        u._replace(query=urlencode(u.query))
+        return urlunparse(u)
+
+    def verify(self, url: str, sig: str = None) -> bool:
+        u = urlparse(url)
+        if sig is None:
+            query = dict(parse_qsl(u.query))
+            sig = query.get('sig', '')
+        signed_path = f'{u.path}.{sig}'
+        try:
+            self.timed_signer.unsign(signed_path, max_age=self.max_age)
+        except BadSignature:
+            return False
+        return True
+
+
 __all__ = [
     'HashedPassword', 'LoginInterfaceBase',
-    'ExtendableSessionInterface'
+    'ExtendableSessionInterface', 'URLPathSigner',
 ]

@@ -10,7 +10,7 @@ from joker.flasky.auth import HashedPassword
 
 
 warnings.warn(
-    "joker.flasky.security is deprecated. Use joker.redis.auth instead.",
+    "joker.flasky.security is deprecated. Use joker.flasky.auth instead.",
     DeprecationWarning,
 )
 
