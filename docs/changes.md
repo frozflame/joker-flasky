@@ -1,5 +1,16 @@
-Changes of joker-flasky
-========================
+joker-flasky: recent changes
+----------------------------
+
+### 0.4.8
+* add URLPathSigner
+* add ctxmap_views.py
+* do not require joker
+* add test_urlpathsigner() and fix URLPathSigner.sign()
+* fix respond_content()
+* use volkanic~=0.4.0, joker~=0.3.0, joker-redis~=0.0.3
+* rename infer_mime_type => infer_mimetype; infer_mimetype('png') acceptable
+* add respond_content()
+* add DeprecationWarning
 
 #### 0.3
 * improve load_contextmap

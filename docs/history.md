@@ -1,5 +1,5 @@
-Historical changes of joker-flasky
-==================================
+joker-flasky: historical changes
+--------------------------------
 
 #### 0.0.6
 * path without .html
