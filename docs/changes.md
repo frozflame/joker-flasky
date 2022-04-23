@@ -1,7 +1,7 @@
 joker-flasky: recent changes
 ----------------------------
 
-### 0.4.8
+### 0.4.8 and 0.4.9
 * add URLPathSigner
 * add ctxmap_views.py
 * do not require joker
