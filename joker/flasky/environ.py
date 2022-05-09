@@ -2,14 +2,23 @@
 # coding: utf-8
 
 """
-Deprecated. This module will be removed on ver 0.6.0.
+For internal use within `joker-flasky`.
 """
+
+from functools import cached_property
 
 import volkanic
 
 
-class GlobalInterface(volkanic.GlobalInterface):
+class JokerInterface(volkanic.GlobalInterface):
     package_name = 'joker.flasky'
 
-
-__all__ = []
+    @cached_property
+    def jinja2_env(self):
+        # noinspection PyPackageRequirements
+        from jinja2 import Environment, PackageLoader, select_autoescape
+        return Environment(
+            loader=PackageLoader(self.package_name, 'templates'),
+            autoescape=select_autoescape(['html', 'xml']),
+            **self.conf.get('_jinja2_env', {})
+        )
