@@ -13,6 +13,7 @@ import flask.sessions
 # noinspection PyPackageRequirements
 import itsdangerous
 from flask import Flask, Request
+# noinspection PyPackageRequirements
 from itsdangerous import TimestampSigner, BadSignature
 from volkanic import errors
 
@@ -24,7 +25,7 @@ def _make_salt():
     return hex(int(time.time() * 65555))[-10:][::-1]
 
 
-class HashedPassword(object):
+class HashedPassword:
     def __init__(self, digest: str, algo: str, salt: str):
         self.digest = digest
         self.algo = algo

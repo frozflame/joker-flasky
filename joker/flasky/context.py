@@ -7,7 +7,7 @@ import random
 import yaml
 
 
-class Rumor(object):
+class Rumor:
     __slots__ = ['attributes']
 
     def __init__(self, **attributes):

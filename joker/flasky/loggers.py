@@ -3,6 +3,7 @@
 
 """
 This module is deprecated.
+This module will be removed in version 0.6.0.
 """
 
 import warnings
