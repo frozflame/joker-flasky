@@ -1,16 +1,25 @@
 #!/usr/bin/env python3
 # coding: utf-8
 
+from __future__ import annotations
+
+import textwrap
+import dataclasses
 import datetime
 import decimal
 import functools
 import mimetypes
 import re
+from functools import cached_property
+from typing import Callable
 from typing import Union
 
 import flask
 import flask.views
+from flask import Flask
 from volkanic.utils import merge_dicts
+# noinspection PyPackageRequirements
+from werkzeug.routing import Rule
 
 
 def infer_mimetype(filename: str, default="text/plain") -> str:
@@ -230,3 +239,39 @@ def decorate_all_view_funcs(app, decorator):
 def url_for_this(**values):
     # https://github.com/pallets/flask/issues/2111
     return flask.url_for(flask.request.endpoint, **values)
+
+
+@dataclasses.dataclass
+class ViewEntry:
+    rule: Rule
+    func: Callable
+
+    @cached_property
+    def methods(self) -> list[str]:
+        vals = list(self.rule.methods)
+        vals.sort()
+        return vals
+
+    @cached_property
+    def explicit_methods(self) -> list[str]:
+        implicit = {'HEAD', 'OPTIONS'}
+        return [s for s in self.methods if s not in implicit]
+
+    def fmt_methods(self, sep='|', implicit=False):
+        methods = self.methods if implicit else self.explicit_methods
+        return sep.join(methods)
+
+    @property
+    def help(self) -> dict:
+        return getattr(self.func, 'help', {})
+
+    @property
+    def docstring(self) -> str:
+        return textwrap.dedent(self.func.__doc__ or '')
+
+    @classmethod
+    def get_all(cls, app: Flask) -> dict[str, ViewEntry]:
+        # entries = {}
+        rules = {r.endpoint: r for r in app.url_map.iter_rules()}
+        funcs = app.view_functions
+        return {k: cls(rules[k], funcs[k]) for k in rules}
