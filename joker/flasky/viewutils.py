@@ -10,9 +10,9 @@ import functools
 import mimetypes
 import re
 import textwrap
+from collections import defaultdict
 from functools import cached_property
-from typing import Callable
-from typing import Union
+from typing import Union, Callable
 
 import flask
 import flask.views
@@ -254,9 +254,8 @@ def find_matching_rule(request: Request = None, app: Flask = None):
 
 
 @dataclasses.dataclass
-class ViewEntry:
+class _RuleWrapper:
     rule: Rule
-    func: Callable
 
     @cached_property
     def methods(self) -> list[str]:
@@ -273,9 +272,31 @@ class ViewEntry:
         methods = self.methods if implicit else self.explicit_methods
         return sep.join(methods)
 
+    def iter_captions(self) -> str:
+        for method in self.explicit_methods:
+            yield method, self.rule.rule
+
+
+class ViewEntry:
+    def __init__(self, func: Callable, *rules: Rule):
+        if not rules:
+            c = self.__class__.__name__
+            raise ValueError(f'{c} requires at least 1 rule in arguments')
+        self.func = func
+        self._rules = rules
+        self._rulewrappers = [_RuleWrapper(r) for r in rules]
+
+    @property
+    def endpoint(self):
+        return self._rules[0].endpoint
+
     @property
     def help(self) -> dict:
         return getattr(self.func, 'help', {})
+
+    def iter_captions(self):
+        for rw in self._rulewrappers:
+            yield from rw.iter_captions()
 
     @property
     def docstring(self) -> str:
@@ -284,7 +305,8 @@ class ViewEntry:
 
     @classmethod
     def get_all(cls, app: Flask) -> dict[str, ViewEntry]:
-        # entries = {}
-        rules = {r.endpoint: r for r in app.url_map.iter_rules()}
         funcs = app.view_functions
-        return {k: cls(rules[k], funcs[k]) for k in rules}
+        rules = defaultdict(list)
+        for rule in app.url_map.iter_rules():
+            rules[rule.endpoint].append(rule)
+        return {k: cls(funcs[k], *v) for k, v in rules.items()}
