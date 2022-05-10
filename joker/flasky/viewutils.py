@@ -16,7 +16,7 @@ from typing import Union
 
 import flask
 import flask.views
-from flask import Flask
+from flask import Flask, Request
 from volkanic.utils import merge_dicts
 # noinspection PyPackageRequirements
 from werkzeug.routing import Rule
@@ -239,6 +239,18 @@ def decorate_all_view_funcs(app, decorator):
 def url_for_this(**values):
     # https://github.com/pallets/flask/issues/2111
     return flask.url_for(flask.request.endpoint, **values)
+
+
+def find_matching_rule(request: Request = None, app: Flask = None):
+    if request is None:
+        request = flask.request
+    if app is None:
+        app = flask.current_app
+    for rule in app.url_map.iter_rules():
+        rv = rule.match('|' + request.path)
+        if rv is None:
+            continue
+        return rule
 
 
 @dataclasses.dataclass
