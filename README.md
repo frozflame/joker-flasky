@@ -7,11 +7,15 @@ Reusable components for flask-based web development.
 recent change
 -------------
 
+### version 0.5.1
+- rewrite of `ViewEntry`
+- add `viewutils.find_matching_rule()`
+
 ### version 0.5.0
 
 - python_requires >= 3.8
-- add ViewEntry
-- add respond_upload_page(), respond_login_page()
+- add `ViewEntry`
+- add `respond_upload_page()` and `respond_login_page()`
 
 ### version 0.4.8 and 0.4.9
 
