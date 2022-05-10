@@ -3,13 +3,13 @@
 
 from __future__ import annotations
 
-import textwrap
 import dataclasses
 import datetime
 import decimal
 import functools
 import mimetypes
 import re
+import textwrap
 from functools import cached_property
 from typing import Callable
 from typing import Union
@@ -267,7 +267,8 @@ class ViewEntry:
 
     @property
     def docstring(self) -> str:
-        return textwrap.dedent(self.func.__doc__ or '')
+        s = textwrap.dedent(self.func.__doc__ or '')
+        return re.sub(r'^\s+|\s+$', '', s)
 
     @classmethod
     def get_all(cls, app: Flask) -> dict[str, ViewEntry]:

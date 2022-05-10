@@ -6,11 +6,11 @@ from joker.flasky.environ import JokerInterface
 ji = JokerInterface()
 
 
-def respond_login_page():
+def respond_login_page(username: str = '', password: str = ''):
     tpl = ji.jinja2_env.get_template('login.html')
-    return tpl.render()
+    return tpl.render(username=username, password=password)
 
 
-def respond_upload_page():
+def respond_upload_page(label=None):
     tpl = ji.jinja2_env.get_template('upload.html')
-    return tpl.render()
+    return tpl.render(label=label)
