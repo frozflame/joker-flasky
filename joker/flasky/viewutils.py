@@ -7,12 +7,13 @@ import dataclasses
 import datetime
 import decimal
 import functools
+
 import mimetypes
 import re
 import textwrap
 from collections import defaultdict
 from functools import cached_property
-from typing import Union, Callable
+from typing import Union, Callable, Tuple, Iterable
 
 import flask
 import flask.views
@@ -268,11 +269,11 @@ class _RuleWrapper:
         implicit = {'HEAD', 'OPTIONS'}
         return [s for s in self.methods if s not in implicit]
 
-    def fmt_methods(self, sep='|', implicit=False):
+    def fmt_methods(self, sep='|', implicit=False) -> str:
         methods = self.methods if implicit else self.explicit_methods
         return sep.join(methods)
 
-    def iter_captions(self) -> str:
+    def iter_captions(self) -> Iterable[Tuple[str, str]]:
         for method in self.explicit_methods:
             yield method, self.rule.rule
 
@@ -287,21 +288,35 @@ class ViewEntry:
         self._rulewrappers = [_RuleWrapper(r) for r in rules]
 
     @property
-    def endpoint(self):
+    def endpoint(self) -> str:
         return self._rules[0].endpoint
+
+    @property
+    def funcname(self) -> str:
+        return self.endpoint.split('.')[-1]
 
     @property
     def help(self) -> dict:
         return getattr(self.func, 'help', {})
 
-    def iter_captions(self):
+    def iter_captions(self) -> Iterable[Tuple[str, str]]:
         for rw in self._rulewrappers:
             yield from rw.iter_captions()
 
-    @property
+    @cached_property
     def docstring(self) -> str:
         s = textwrap.dedent(self.func.__doc__ or '')
         return re.sub(r'^\s+|\s+$', '', s)
+
+    @cached_property
+    def docstring_lines(self) -> list[str]:
+        return self.docstring.splitlines()
+
+    @cached_property
+    def docstring_title(self) -> str:
+        if not self.docstring_lines:
+            return ''
+        return self.docstring_lines[0]
 
     @classmethod
     def get_all(cls, app: Flask) -> dict[str, ViewEntry]:
