@@ -7,7 +7,13 @@ Reusable components for flask-based web development.
 recent change
 -------------
 
+### version 0.5.2
+
+- add `respond_help_page()` and `respond_helplist_page()`
+- improve `ViewEntry`
+
 ### version 0.5.1
+
 - rewrite of `ViewEntry`
 - add `viewutils.find_matching_rule()`
 
@@ -28,12 +34,4 @@ recent change
 - rename infer_mime_type => infer_mimetype; infer_mimetype('png') acceptable
 - add respond_content()
 - add DeprecationWarning
-
-### version 0.3
-
-- improve load_contextmap
-
-### version 0.2
-
-- rename j.f.context.load_standard_ctxmap to load_contextmap with improvements
 
