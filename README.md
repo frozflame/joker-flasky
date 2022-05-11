@@ -4,8 +4,8 @@ joker-flasky
 Reusable components for flask-based web development.
 
 
-recent change
--------------
+Recent changes
+--------------
 
 ### version 0.5.2
 

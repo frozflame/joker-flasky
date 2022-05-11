@@ -10,12 +10,14 @@ ji = JokerInterface()
 
 
 def respond_login_page(
-        username='', password='', title='Login') -> str:
+        username='', password='',
+        title='Login', usejson=False) -> str:
     tpl = ji.jinja2_env.get_template('login.html')
     return tpl.render(
         username=username,
         password=password,
         title=title,
+        usejson=usejson,
     )
 
 
