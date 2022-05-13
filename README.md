@@ -7,6 +7,9 @@ Reusable components for flask-based web development.
 Recent changes
 --------------
 
+### version 0.5.3
+- fix: package was not installed in a way that PackageLoader understands
+
 ### version 0.5.2
 
 - add `respond_help_page()` and `respond_helplist_page()`
