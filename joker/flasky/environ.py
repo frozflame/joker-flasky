@@ -16,9 +16,9 @@ class JokerInterface(volkanic.GlobalInterface):
     @cached_property
     def jinja2_env(self):
         # noinspection PyPackageRequirements
-        from jinja2 import Environment, PackageLoader, select_autoescape
+        from jinja2 import Environment, FileSystemLoader, select_autoescape
         env = Environment(
-            loader=PackageLoader(self.package_name, 'templates'),
+            loader=FileSystemLoader(self.under_package_dir('templates')),
             autoescape=select_autoescape(['html', 'xml']),
             **self.conf.get('_jinja2_env', {})
         )

@@ -3,11 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <title>{{ title }}</title></head>
+<style>
+    body {
+        margin: auto;
+        max-width: 800px;
+        font-size: 17px;
+        line-height: 26px;
+    }
+
+    pre {
+        margin: 10px;
+        padding: 20px;
+        background-color: rgba(222, 222, 222, 0.33);
+        border-radius: 6px;
+    }
+
+    code {
+        font-family: "Courier New", Courier, monospace;
+    }
+
+    form {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        padding: 10px;
+    }
+
+    label, input, button {
+        margin: 6px;
+        padding: 4px;
+    }
+
+</style>
 <body>
 <form method="POST">
-    <label for="username">Username</label>
+    <label for="username">username:</label>
     <input type="text" id="username" name="username" value="{{ username }}">
-    <label for="password">Password</label>
+    <label for="password">password:</label>
     <input type="password" id="password" name="password" value="{{ password }}">
     <button>Submit</button>
 </form>
