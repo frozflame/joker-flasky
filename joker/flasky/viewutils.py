@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # coding: utf-8
-
 from __future__ import annotations
 
 import dataclasses
 import datetime
 import decimal
 import functools
+from typing import Type, TypeVar
 
 import mimetypes
 import re
@@ -278,6 +278,9 @@ class _RuleWrapper:
             yield method, self.rule.rule
 
 
+T = TypeVar('T')
+
+
 class ViewEntry:
     def __init__(self, func: Callable, *rules: Rule):
         if not rules:
@@ -303,6 +306,14 @@ class ViewEntry:
         for rw in self._rulewrappers:
             yield from rw.iter_captions()
 
+    @property
+    def methods(self) -> set[str]:
+        return {cap[0] for cap in self.iter_captions()}
+
+    @property
+    def paths(self) -> set[str]:
+        return {cap[1] for cap in self.iter_captions()}
+
     @cached_property
     def docstring(self) -> str:
         s = textwrap.dedent(self.func.__doc__ or '')
@@ -319,9 +330,18 @@ class ViewEntry:
         return self.docstring_lines[0]
 
     @classmethod
-    def get_all(cls, app: Flask) -> dict[str, ViewEntry]:
+    def get_all(cls: Type[T], app: Flask) -> dict[str, T]:
         funcs = app.view_functions
         rules = defaultdict(list)
         for rule in app.url_map.iter_rules():
             rules[rule.endpoint].append(rule)
         return {k: cls(funcs[k], *v) for k, v in rules.items()}
+
+    def to_json_serializable(self) -> dict:
+        return {
+            'methods': sorted(self.methods),
+            'paths': list(self.paths),
+            'captions': list(self.iter_captions()),
+            'endpoint': self.endpoint,
+            'doctring': self.docstring,
+        }
