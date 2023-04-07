@@ -4,4 +4,4 @@ jsonschema~=3.2.0
 orjson
 pyyaml
 redis~=3.5.3
-volkanic~=0.4.1
+volkanic>=0.4.1
