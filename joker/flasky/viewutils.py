@@ -157,6 +157,8 @@ def json_default_strict(o):
         return o.strftime('%Y-%m-%d %H:%M:%S')
     if isinstance(o, datetime.date):
         return o.isoformat()
+    if hasattr(o, '__json__'):
+        return o.__json__()
     if hasattr(o, 'as_json_serializable'):
         return o.as_json_serializable()
     raise TypeError
