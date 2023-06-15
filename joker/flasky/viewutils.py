@@ -184,14 +184,17 @@ def chain_json_default_functions(*funcs):
     return functools.partial(call_json_default_functions, funcs=funcs)
 
 
-class JSONEncoderPlus(flask.json.JSONEncoder):
-    json_default_funcs = [json_default_strict, str]
+try:
+    class JSONEncoderPlus(flask.json.JSONEncoder):
+        json_default_funcs = [json_default_strict, str]
 
-    def default(self, o):
-        try:
-            return call_json_default_functions(o, self.json_default_funcs)
-        except TypeError:
-            return super().default(o)
+        def default(self, o):
+            try:
+                return call_json_default_functions(o, self.json_default_funcs)
+            except TypeError:
+                return super().default(o)
+except AttributeError:
+    pass
 
 
 def get_json_encoder(*json_default_funcs):
